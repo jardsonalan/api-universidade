@@ -12,69 +12,25 @@ namespace apiUniversidade.Controllers
     public class CursoController : ControllerBase
     {
 
-        [HttpGet(Name = "cursos")]
+        private readonly ILogger<CursoController> _logger;
 
-        public List<Curso> GetCursos()
+        private readonly apiUniversidadeContext _context;
+
+        public CursoController(ILogger<CursoController> logger, apiUniversidadeContext context)
+        {
+            _logger = logger;
+            _context = context;
+        }
+
+        [HttpGet]
+
+        public ActionResult<IEnumerable<Curso>> Get()
         {
 
-            List<Aluno> alunos = new List<Aluno>();
-            List<Disciplina> disciplinas = new List<Disciplina>();
-            List<Curso> cursos = new List<Curso>();
-
-            disciplinas.Add(new Disciplina{
-                Nome = "Português",
-                CargaHoraria = 80,
-                Semestre = 4
-            });
-
-            disciplinas.Add(new Disciplina{
-                Nome = "Matemática",
-                CargaHoraria = 80,
-                Semestre = 4
-            });
-
-            disciplinas.Add(new Disciplina{
-                Nome = "História",
-                CargaHoraria = 80,
-                Semestre = 4
-            });
-
-            cursos.Add(new Curso{
-                Nome = "Linguagem",
-                Area = "Letras",
-                Duracao = 4,
-                Disciplinas = disciplinas,
-                Alunos = alunos
-            });
-
-            cursos.Add(new Curso{
-                Nome = "Calcúlos",
-                Area = "Matemática",
-                Duracao = 4,
-                Disciplinas = disciplinas,
-                Alunos = alunos
-            });
-
-            cursos.Add(new Curso{
-                Nome = "História",
-                Area = "História",
-                Duracao = 4,
-                Disciplinas = disciplinas,
-                Alunos = alunos
-            });
-
-            alunos.Add(new Aluno {
-                Nome = "Jardson",
-                dataNascimento = DateTime.Now,
-                CPF = "444-444"
-            });
-
-            alunos.Add(new Aluno {
-                Nome = "Maria",
-                dataNascimento = DateTime.Now,
-                CPF = "444-455"
-            });
-
+            var cursos = _context.Curso.ToList();
+            if(cursos is null)
+                return NotFound();
+            
             return cursos;
         }
     }
