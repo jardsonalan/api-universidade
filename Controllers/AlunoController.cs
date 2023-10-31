@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using apiUniversidade.Model;
+using apiUniversidade.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace apiUniversidade.Controllers
 {
@@ -12,35 +14,72 @@ namespace apiUniversidade.Controllers
     public class AlunoController : ControllerBase
     {
 
-        [HttpGet(Name = "aluno")]
+        private readonly ILogger<AlunoController> _logger;
 
-        public List<Aluno> GetAlunos()
+        private readonly apiUniversidadeContext _context;
+
+        public AlunoController(ILogger<AlunoController> logger, apiUniversidadeContext context)
         {
-            List<Aluno> a = new List<Aluno>();
+            _logger = logger;
+            _context = context;
+        }
 
-            Aluno a1 = new Aluno();
-            a1.ID = 1;
-            a1.Nome = "Ana";
-            a1.CPF = "333-333";
-            a1.dataNascimento = DateTime.Now;
+        [HttpGet]
 
-            Aluno a2 = new Aluno();
-            a2.ID = 2;
-            a2.Nome = "Maria";
-            a2.CPF = "222-222";
-            a2.dataNascimento = DateTime.Now;
+        public ActionResult<IEnumerable<Aluno>> Get()
+        {
+            var alunos = _context.Alunos.ToList();
+            if(alunos is null)
+                return NotFound();
 
-            Aluno a3 = new Aluno();
-            a3.ID = 3;
-            a3.Nome = "Matheus";
-            a3.CPF = "444-444";
-            a3.dataNascimento = DateTime.Now;
+            return alunos;
+        }
 
-            a.Add(a1);
-            a.Add(a2);
-            a.Add(a3);
+        [HttpPost]
 
-            return a;
+        public ActionResult Post(Aluno alunos){
+            _context.Alunos.Add(alunos);
+            _context.SaveChanges();
+
+            return new CreatedAtRouteResult("GetAluno",
+                new { id = alunos.ID },
+                alunos);
+        }
+
+        [HttpGet("{id:int}", Name="GetAluno")]
+
+        public ActionResult<Aluno> Get(int id){
+            var alunos = _context.Alunos.FirstOrDefault(p => p.ID == id);
+            if(alunos is null)
+                return NotFound("Aluno não encontrado.");
+
+            return alunos;
+        }
+
+        [HttpPut("{id:int}")]
+
+        public ActionResult Put(int id, Aluno alunos){
+            if(id != alunos.ID)
+                return BadRequest();
+
+            _context.Entry(alunos).State = EntityState.Modified;
+            _context.SaveChanges();
+
+            return Ok(alunos);
+        }
+
+        [HttpDelete("{id:int}")]
+
+        public ActionResult Delete(int id){
+            var alunos = _context.Alunos.FirstOrDefault(p => p.ID == id);
+
+            if(alunos is null)
+                return NotFound();
+
+            _context.Alunos.Remove(alunos);
+            _context.SaveChanges();
+
+            return Ok(alunos);
         }
     }
 }

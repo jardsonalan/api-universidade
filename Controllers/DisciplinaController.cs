@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using apiUniversidade.Model;
+using apiUniversidade.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace apiUniversidade.Controllers
 {
@@ -12,35 +14,73 @@ namespace apiUniversidade.Controllers
     public class DisciplinaController : ControllerBase
     {
 
-        [HttpGet(Name = "disciplinas")]
+        private readonly ILogger<DisciplinaController> _logger;
+        
+        private readonly apiUniversidadeContext _context;
 
-        public List<Disciplina> GetDisciplinas()
+        public DisciplinaController(ILogger<DisciplinaController> logger, apiUniversidadeContext context)
         {
-            List<Disciplina> d = new List<Disciplina>();
+            _logger = logger;
+            _context = context;
+        }
 
-            Disciplina d1 = new Disciplina();
-            //d1.ID = 1;
-            d1.Nome = "Programação para Internet";
-            d1.CargaHoraria = 80;
-            d1.Semestre = 8;
+        [HttpGet]
 
-            Disciplina d2 = new Disciplina();
-            //d2.ID = 2;
-            d2.Nome = "Português";
-            d2.CargaHoraria = 60;
-            d2.Semestre = 4;
+        public ActionResult<IEnumerable<Disciplina>> Get()
+        {
 
-            Disciplina d3 = new Disciplina();
-            //d3.ID = 3;
-            d3.Nome = "Matemática";
-            d3.CargaHoraria = 40;
-            d3.Semestre = 7;
+            var disciplinas = _context.Disciplinas.ToList();
+            if(disciplinas is null)
+                return NotFound();
+            
+            return disciplinas;
+        }
 
-            d.Add(d1);
-            d.Add(d2);
-            d.Add(d3);
+        [HttpPost]
 
-            return d;
+        public ActionResult Post(Disciplina disciplinas){
+            _context.Disciplinas.Add(disciplinas);
+            _context.SaveChanges();
+
+            return new CreatedAtRouteResult("GetDisciplina",
+                new { id = disciplinas.ID },
+                disciplinas);
+        }
+
+        [HttpGet("{id:int}", Name="GetDisciplina")]
+
+        public ActionResult<Disciplina> Get(int id){
+            var disciplinas = _context.Disciplinas.FirstOrDefault(p => p.ID == id);
+            if(disciplinas is null)
+                return NotFound("Disciplina não encontrada.");
+
+            return disciplinas;
+        }
+
+        [HttpPut("{id:int}")]
+
+        public ActionResult Put(int id, Disciplina disciplinas){
+            if(id != disciplinas.ID)
+                return BadRequest();
+
+            _context.Entry(disciplinas).State = EntityState.Modified;
+            _context.SaveChanges();
+
+            return Ok(disciplinas);
+        }
+
+        [HttpDelete("{id:int}")]
+
+        public ActionResult Delete(int id){
+            var disciplinas = _context.Disciplinas.FirstOrDefault(p => p.ID == id);
+
+            if(disciplinas is null)
+                return NotFound();
+
+            _context.Disciplinas.Remove(disciplinas);
+            _context.SaveChanges();
+
+            return Ok(disciplinas);
         }
     }
 }
