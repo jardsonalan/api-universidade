@@ -50,7 +50,7 @@ namespace apiUniversidade.Controllers
                     return BadRequest(result.Errors);
 
                 await _signInManager.SignInAsync(user, false);
-                return Ok();
+                return Ok(GeraToken(model));
             }
 
         [HttpPost("login")]
@@ -61,7 +61,7 @@ namespace apiUniversidade.Controllers
                     isPersistent: false, lockoutOnFailure: false);
 
                 if(result.Succeeded)
-                    return Ok();
+                    return Ok(GeraToken(userInfo));
                 else{
                     ModelState.AddModelError(string.Empty, "Login inválido...");
                     return BadRequest(ModelState);

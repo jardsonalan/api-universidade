@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using apiUniversidade.Model;
 using apiUniversidade.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace apiUniversidade.Controllers
 {
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [ApiController]
     [Route("[controller]")]
     public class CursoController : ControllerBase
