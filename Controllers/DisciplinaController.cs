@@ -12,7 +12,8 @@ namespace apiUniversidade.Controllers
 {
     [Authorize(AuthenticationSchemes = "Bearer")]
     [ApiController]
-    [Route("[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/{v:apiversion}/disciplina")]
     public class DisciplinaController : ControllerBase
     {
 
@@ -84,5 +85,13 @@ namespace apiUniversidade.Controllers
 
             return Ok(disciplinas);
         }
+
+        // [HttpGet(Name = "GetV1")]
+        // [Route("version1")]
+
+        // public String GetV1()
+        // {
+        //     return "Api Universidade - Versão 1.0";
+        // }
     }
 }

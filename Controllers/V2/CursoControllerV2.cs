@@ -86,12 +86,12 @@ namespace apiUniversidade.Controllers
             return Ok(curso);
         }
 
-        [HttpGet(Name = "GetV2")]
-        [Route("version2")]
+        // [HttpGet(Name = "GetV2")]
+        // [Route("version2")]
 
-        public String GetExemplo()
-        {
-            return "Api Universidade - Versão 2.0";
-        }
+        // public String GetV2()
+        // {
+        //     return "Api Universidade - Versão 2.0";
+        // }
     }
 }
