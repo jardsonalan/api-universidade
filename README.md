@@ -77,15 +77,15 @@ Com esta API, é possível realizar operações como adicionar, modificar, busca
 1. Entre no ```appsettings.json```
 2. Na seção ```Jwt``` modifique o valor:
    ```json
-      "Jwt": {
-        "Key": "sua-chave-secreta",
-      },
+   "Jwt": {
+     "Key": "sua-chave-secreta",
+   },
     ```
 3. Na seção ```TokenConfiguration``` modifique os valores:
    ```json
-      "TokenConfiguration": {
-        "Audience": "seu-publico",
-        "Issuer": "sua-api",
-        "ExpireHours": "tempo-de-funcionamento-do-token",
-      },
+   "TokenConfiguration": {
+     "Audience": "seu-publico",
+     "Issuer": "sua-api",
+     "ExpireHours": "tempo-de-funcionamento-do-token",
+   },
     ```
